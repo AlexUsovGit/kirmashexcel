@@ -179,11 +179,14 @@
             </form>
          </td>
          <td>
-            <form method="post" action="getProducts">
-               <input type="hidden" name="_csrf" value="{{_csrf.token}}" style="display: none">
+{{#showAdmin}}
+            <form method="post" action="getProducts" >
+               <input type="hidden" name="_csrf" value="{{_csrf.token}}" >
+               <input type="text"  autocomplete="off" name="filter" value="{{filterValue}}" style="display: none"  >
                <button type="submit" class="main-btn-form" style="width: 170px; background-color: #107C41">Выгрузить в Excel
                </button>
             </form>
+{{/showAdmin}}
          </td>
       </tr>
    </table>
@@ -196,10 +199,10 @@
    <table style="width: 55%">
       <tr>  Штрихкод.</tr>
       <tr>
-         <td> <form method="post" action="/producttableFilter">
+         <td> <form method="post" action="/producttableFilter" >
             <input type="hidden" name="_csrf" value="{{_csrf.token}}">
 
-            <input type="text"  autocomplete="off" name="barcode" value="" style="width: 50%;" >
+            <input type="text"  autocomplete="off" name="barcode" value="{{filterValue}}" style="width: 50%;" >
                 <button type="submit" class="main-btn-form" style="    width: 210px;     background-color: #FFA073;">Фильтр</button>
          </form></td>
          <td> <form method="get" action="/producttable">
@@ -376,6 +379,13 @@
                      //use this value
 
                   }
+
+                  function copyValue() {
+                     document.getElementsByName('filter')[0].value =
+                     document.getElementsByName('barcode')[0].value;
+                  }
+
+
                </script>
                <td>
                   <form method="post" action="searchdoc">
