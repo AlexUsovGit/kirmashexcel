@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.util.Map;
@@ -35,12 +36,17 @@ public class ExportController {
     }
 
     @RequestMapping(value = "/getProducts", method = RequestMethod.POST)
-    public ResponseEntity<byte[]> getExcel() throws IOException {
+    public ResponseEntity<byte[]> getExcel(@RequestParam String filter) throws IOException {
         Iterable<Product> products;
         ResponseEntity<byte[]> response = null;
+        if(filter != null && !filter.isEmpty()){
+            products = productRepo.findByBarcodeOrderByIdAsc(filter);
+        }else{
+            products = productRepo.findAllByOrderByIdDesc();
+        }
 
 
-        products = productRepo.findAllByOrderByIdDesc();
+
         Exports exports = new Exports();
         exports.createXlsx(products);
         byte[] contents = exports.getXLS();
