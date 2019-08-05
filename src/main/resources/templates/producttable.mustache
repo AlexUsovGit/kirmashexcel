@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+   <title>Товары</title>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!--===============================================================================================-->
+   <link rel="icon" type="image/png" href="../images/icons/favicon.ico"/>
+   <style>
+      body {
+         font-family: sans-serif;
+      }
+
+      input {
+         width: 96%;
+         margin: 2px;
+         font-size: 11pt;
+
+      }
+
+      select {
+         width: 97%;
+         margin: 2px;
+         font-size: 11pt;
+      }
+
+      .w30 {
+         width: 30.3%;
+      }
+
+      .main-btn-form-exit {
+         font-size: 15px;
+         width: 100px;
+         background-color: #caccd1;
+         color: white;
+         height: 30px;
+         text-decoration: none;
+         border-radius: 9px;
+         border: none
+      }
+
+      .main-btn {
+         font-size: 20px;
+         width: 120px;
+         background-color: #179E98;
+         height: 40px;
+         text-decoration: none;
+         border-radius: 9px;
+      }
+
+      .main-btn2 {
+         font-size: 15px;
+         width: 100px;
+         background-color: #179E98;
+         height: 30px;
+         text-decoration: none;
+         border-radius: 9px;
+      }
+
+      .main-btn-form {
+         font-size: 15px;
+         width: 100px;
+         background-color: #179E98;
+         color: white;
+         height: 30px;
+         text-decoration: none;
+         border-radius: 9px;
+         border: none
+      }
+
+      .sort_ico_asc {
+         background: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3cpath d='M0 0h24v24H0z' fill='none'/%3e%3c/svg%3e");
+
+         width: 18px;
+         border: none;
+         height: 20px;
+
+      }
+
+      .sort_ico_desc {
+         background: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18'%3e%3cpath d='M7 14l5-5 5 5z'/%3e%3cpath d='M0 0h24v24H0z' fill='none'/%3e%3c/svg%3e");
+         width: 18px;
+         border: none;
+         height: 20px;
+
+      }
+
+
+      #customers {
+         font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+         border-collapse: collapse;
+         width: 100%;
+      }
+
+      #customers td, #customers th {
+         border: 1px solid #ddd;
+         padding: 3px;
+         font-size: 13px;
+      }
+
+      #customers tr:nth-child(even) {
+         background-color: #f2f2f2;
+      }
+
+      #customers tr:hover {
+         background-color: #ddd;
+      }
+
+      #customers th {
+         padding-top: 0px;
+         padding-bottom: 0px;
+         text-align: center;
+         background-color: #727b6b;
+         color: white;
+         font-size: 12px;
+
+      }
+
+      input::-webkit-calendar-picker-indicator {
+         opacity: 100;
+         color: #727b6b;
+      }
+
+   </style>
+
+</head>
+<body>
+<script>
+   var productList = '';
+</script>
+
+<table border="0" cellpadding="2" cellspacing="2" align="center" style="width:100%; font-size: 11px">
+   <tr>
+      <td>
+         <div style="width: 50%">
+
+            <form method="get" action="/main">
+               <button type="submit" class="main-btn-form">Главная
+               </button>
+            </form>
+         </div>
+      </td>
+      <td style="width: 50%">
+         <div>
+            <form action="/logout" method="post">
+               <p style=" text-align: right;">
+                  <input name="_csrf" type="hidden" value="{{_csrf.token}}"/>
+
+                  <button type="submit" class="main-btn-form-exit">Выйти
+                  </button>
+               </p>
+            </form>
+         </div>
+      </td>
+   </tr>
+
+</table>
+
+
+<div>
+   <table>
+      <tr>
+         <td>
+            <form method="get" action="/productadd">
+               <!--<input type="hidden" name="_csrf" value="{{_csrf.token}}" style="display: none">-->
+               <button type="submit" class="main-btn-form" style="width: 150px; background-color: #FFA073">Добавить
+                  товар
+               </button>
+            </form>
+         </td>
+         <td>
+            <form method="post" action="documentDistribution">
+               <input type="hidden" name="_csrf" value="{{_csrf.token}}" style="display: none">
+               <input type="text" name="id" value="1" style="display: none">
+
+               <button type="submit" class="main-btn-form" style="width: 170px; background-color: #FACB1D">Распределить
+                  товары
+               </button>
+            </form>
+         </td>
+         <td>
+            <form method="post" action="exportAllProducts">
+               <input type="hidden" name="_csrf" value="{{_csrf.token}}" style="display: none">
+               <button type="submit" class="main-btn-form" style="width: 170px; background-color: #107C41">Выгрузить в Excel
+               </button>
+            </form>
+         </td>
+      </tr>
+   </table>
+</div>
+
+
+
+<div style="margin-top: 5px">
+
+   <table style="width: 55%">
+      <tr>  Штрихкод.</tr>
+      <tr>
+         <td> <form method="post" action="/producttableFilter">
+            <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+
+            <input type="text"  autocomplete="off" name="barcode" value="" style="width: 50%;" >
+                <button type="submit" class="main-btn-form" style="    width: 210px;     background-color: #FFA073;">Фильтр</button>
+         </form></td>
+         <td> <form method="get" action="/producttable">
+            <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+            <button type="submit" class="main-btn-form" style="    width: 210px;     background-color: #FACB1D;">Сбросить</button>
+         </form></td>
+      </tr>
+   </table>
+
+
+</div>
+<div style="text-align:center; ">
+   <table id="customers" align="center" border="1" cellpadding="2" cellspacing="0"
+          style="width:100%;     border-color: lightgray; font-family: serif;
+           border: 1px solid black;
+           border-collapse: collapse">
+      <tbody>
+      <tr class="header-table">
+         <th></th>
+         <th>...</th>
+         <th style="display: none;">add</th>
+         <th style="display: none;">id</th>
+         <th style="display: none;">id</th>
+         <th>
+            <table id="info">
+               <thead>
+                  <th style="  border: 0px solid #ddd;    padding: 0px;   font-size: 13px;"> Наименование товара</th>
+                  <th style="  border: 0px solid #ddd;    padding: 0px;   font-size: 13px;">
+                     <form method="get" action="/productProductnameAsc">
+                        <input type="hidden" name="_csrf" value="{{_csrf.token}}" style="display: none">
+                        <button type="submit" class="sort_ico_asc"></button>
+                     </form>
+                  </th>
+                  <th style="  border: 0px solid #ddd;    padding: 0px;   font-size: 13px;">
+                     <form method="get" action="/productProductnameDesc">
+                        <input type="hidden" name="_csrf" value="{{_csrf.token}}" style="display: none">
+                        <button type="submit" class="sort_ico_desc"></button>
+                     </form>
+                  </th>
+               </thead>
+
+
+            </table>
+
+
+         </th>
+         <th>Пол
+            <form method="get" action="/productGender">
+               <input type="hidden" name="_csrf" value="{{_csrf.token}}" style="display: none">
+
+               <button type="submit" class="sort_ico_asc">
+
+               </button>
+            </form>
+         </th>
+         <th>Размер</th>
+         <th>Торговая Марка
+            <form method="get" action="/producttable">
+               <input type="hidden" name="_csrf" value="{{_csrf.token}}" style="display: none">
+
+               <button type="submit" class="sort_ico_asc">
+
+               </button>
+            </form>
+         </th>
+         <!-- <th>Импортер</th>
+          <th>Производитель</th>-->
+         <th>Артикул
+            <form method="get" action="/producttable">
+               <input type="hidden" name="_csrf" value="{{_csrf.token}}" style="display: none">
+
+               <button type="submit" class="sort_ico_asc">
+
+               </button>
+            </form>
+         </th>
+         <th>Внешний Код
+            <form method="get" action="/producttable">
+               <input type="hidden" name="_csrf" value="{{_csrf.token}}" style="display: none">
+
+               <button type="submit" class="sort_ico_asc">
+
+               </button>
+            </form>
+         </th>
+         <th>Состав
+            <form method="get" action="/producttable">
+               <input type="hidden" name="_csrf" value="{{_csrf.token}}" style="display: none">
+
+               <button type="submit" class="sort_ico_asc">
+
+               </button>
+            </form>
+         </th>
+         <th>Сезон
+            <form method="get" action="/producttable">
+               <input type="hidden" name="_csrf" value="{{_csrf.token}}" style="display: none">
+
+               <button type="submit" class="sort_ico_asc">
+
+               </button>
+            </form>
+         </th>
+         <!--   <th>Штрихкод</th>-->
+         <th>Примечание</th>
+         <th>Дата Прихода</th>
+         <th>Всего
+            <form method="get" action="/producttable">
+               <input type="hidden" name="_csrf" value="{{_csrf.token}}" style="display: none">
+
+               <button type="submit" class="sort_ico_asc">
+
+               </button>
+            </form>
+         </th>
+         <th>Распределен</th>
+         <th>На складе</th>
+         <!-- <th>Цена Ввоза</th>
+          <th>Коэффициент</th>
+          <th>Цена Розничная</th>
+          <th>Страна Ввоза</th>
+          <th>Валюта</th>
+          <th>Курс</th>-->
+      </tr>
+      {{#products}}
+         <div>
+
+
+            <tr style="text-align:left; font-size:9px">
+               <td style="width: 27px">
+
+
+                  <input type="checkbox" name="isDistrib" onclick="onClickHandler(this)" value="1" style="    width: 18px;
+                                        height: 18px;
+                                        margin-left: 5px;
+                                        margin-right: 5px;
+                                    ">
+
+
+               </td>
+               <td style="display: none">
+                  <form method="post" action="addToDistrib">
+                     <input type="hidden" name="_csrf" value="{{_csrf.token}}" style="display: none">
+                     <input type="text" name="id" value="{{id}}" style="display: none">
+
+                     <button type="submit" class="main-btn-form" style="display: none">...
+                     </button>
+                  </form>
+
+               </td>
+               <td style="display: none">
+                  <form method="post" action="deleteFromDistrib">
+                     <input type="hidden" name="_csrf" value="{{_csrf.token}}" style="display: none">
+                     <input type="text" name="id" value="{{id}}" style="display: none">
+
+                     <button type="submit" class="main-btn-form" style="display: none">...
+                     </button>
+                  </form>
+
+               </td>
+               <script>
+                  function onClickHandler(cb) {
+                     if (cb.checked == true) {
+                        cb.parentElement.parentElement.children[1].children[0].lastElementChild.click();
+                     } else {
+
+                        cb.parentElement.parentElement.children[2].children[0].lastElementChild.click();
+                     }
+
+                     // cb.parentElement.parentElement.children[1].children[0].lastElementChild.click();
+                     //   productList = productList + cb.parentElement.parentElement.children[4].textContent + ',';
+                     //   alert('click ' +productList);
+
+                     //use this value
+
+                  }
+               </script>
+               <td>
+                  <form method="post" action="searchdoc">
+                     <input type="hidden" name="_csrf" value="{{_csrf.token}}" style="display: none">
+                     <input type="text" name="filter" value="{{barcode}}" style="display: none">
+
+                     <button type="submit" class="main-btn-form" style="
+                           height: 20px;
+                         border-radius: 5px;
+                         background-color: #727b6b;
+                         width: 24px;
+                                   ">...
+                     </button>
+                  </form>
+
+               </td>
+               <td style="display: none">{{id}}</td>
+               <td>{{productName}}</td>
+               <td>{{gender}}</td>
+               <td>{{size}}</td>
+               <td>{{trademark}}</td>
+               <!-- <td>{{importer}}</td>
+                    <td>{{manufacturer}}</td>
+                  -->
+               <td>{{article}}</td>
+               <td>{{code}}</td>
+               <td>{{composition}}</td>
+               <td>{{season}}</td>
+               <!-- <td>{{barcode}}</td>-->
+               <td>{{note}}</td>
+               <td>{{dateArrive}}</td>
+               <td>{{quantity}}</td>
+               <td>{{isDistrib}}</td>
+               <td>20</td>
+
+
+            </tr>
+         </div>
+      {{/products}}
+      </tbody>
+   </table>
+
+   <table>
+      {{#infos}}
+         <tr>
+            <td>
+               {{countSklad}}
+            </td>
+         </tr>
+      {{/infos}}
+
+   </table>
+
+</div>
+<script>
+   function validate(evt) {
+      var theEvent = evt || window.event;
+
+      // Handle paste
+      if (theEvent.type === 'paste') {
+         key = event.clipboardData.getData('text/plain');
+      } else {
+         // Handle key press
+         var key = theEvent.keyCode || theEvent.which;
+         key = String.fromCharCode(key);
+      }
+      var regex = /[0-9]|\./;
+      if (!regex.test(key)) {
+         theEvent.returnValue = false;
+         if (theEvent.preventDefault) theEvent.preventDefault();
+      }
+   }
+
+
+</script>
+
+
+</body>
+<script>
+   window.onload = function () {
+      var checkBoxes = document.querySelectorAll('input[type="checkbox"]');
+
+      for (var i = 0; i < checkBoxes.length; i++) {
+         if (checkBoxes[i].parentElement.parentElement.children[17].innerText == "1") {
+            // alert('true');
+            checkBoxes[i].checked = true;
+         } else {
+            checkBoxes[i].checked = false;
+            //alert('false');
+         }
+
+      }
+
+
+   }
+</script>
+</html>
