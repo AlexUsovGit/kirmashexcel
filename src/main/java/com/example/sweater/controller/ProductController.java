@@ -1,16 +1,22 @@
 package com.example.sweater.controller;
 
 
+import com.example.sweater.domain.Filter;
 import com.example.sweater.domain.NewLabel;
 import com.example.sweater.domain.Product;
+import com.example.sweater.domain.User;
 import com.example.sweater.domain.basedictionary.Composition;
 import com.example.sweater.domain.basedictionary.ProductName;
+import com.example.sweater.repos.FilterRepo;
 import com.example.sweater.repos.InfoClassRepo;
 import com.example.sweater.repos.ProductRepo;
+import com.example.sweater.repos.UserRepo;
 import com.example.sweater.repos.basedictionaryrepos.CompositionRepo;
 import com.example.sweater.repos.basedictionaryrepos.ProductNameRepo;
 import com.itextpdf.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +35,10 @@ public class ProductController {
     private CompositionRepo compositionRepo;
     @Autowired
     private ProductNameRepo productNameRepo;
+    @Autowired
+    private UserRepo userRepo;
+    @Autowired
+    private FilterRepo filterRepo;
 
 
     @Autowired
@@ -39,6 +49,21 @@ public class ProductController {
     public String producttable(Map<String, Object> model) {
         Iterable<Product> products = productRepo.findAllByOrderByIdDesc();
         model.put("products", products);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        User currentUser = userRepo.findByUsername(name);
+
+        model.put("currentUser", currentUser);
+        model.put("currentRole", currentUser.getRoles().toString());
+        model.put("currentUserName", currentUser.getUsername());
+        model.put("showAdmin", currentUser.isShowAdmin());
+        model.put("showSklad", currentUser.isShowSklad());
+        model.put("showReport", currentUser.isShowReport());
+        model.put("showStore", currentUser.isShowStore());
+
+        String filterValue = "";
+        model.put("filterValue", filterValue);
+
 
         return "producttable";
     }
@@ -46,7 +71,28 @@ public class ProductController {
     public String producttableFilter(@RequestParam String barcode, Map<String, Object> model) {
         Iterable<Product> products = productRepo.findByBarcode(barcode);
         model.put("products", products);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        User currentUser = userRepo.findByUsername(name);
 
+        model.put("currentUser", currentUser);
+        model.put("currentRole", currentUser.getRoles().toString());
+        model.put("currentUserName", currentUser.getUsername());
+        model.put("showAdmin", currentUser.isShowAdmin());
+        model.put("showSklad", currentUser.isShowSklad());
+        model.put("showReport", currentUser.isShowReport());
+        model.put("showStore", currentUser.isShowStore());
+
+
+        Filter filter  = new Filter(barcode);
+        filterRepo.save(filter);
+        String filterValue = "";
+
+        Iterable<Filter> filters = filterRepo.findAll();
+        for (Filter filter1 : filters) {
+            filterValue = filter1.getValue();
+        }
+        model.put("filterValue", filterValue);
         return "producttable";
     }
 
@@ -54,6 +100,20 @@ public class ProductController {
     public String producttableProductnameAsc(Map<String, Object> model) {
         Iterable<Product> products = productRepo.findAllByOrderByProductNameAsc();
         model.put("products", products);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        User currentUser = userRepo.findByUsername(name);
+
+        model.put("currentUser", currentUser);
+        model.put("currentRole", currentUser.getRoles().toString());
+        model.put("currentUserName", currentUser.getUsername());
+        model.put("showAdmin", currentUser.isShowAdmin());
+        model.put("showSklad", currentUser.isShowSklad());
+        model.put("showReport", currentUser.isShowReport());
+        model.put("showStore", currentUser.isShowStore());
+
+        String filterValue = "";
+        model.put("filterValue", filterValue);
 
         return "producttable";
     }
@@ -62,7 +122,19 @@ public class ProductController {
     public String producttableProductnameDesc(Map<String, Object> model) {
         Iterable<Product> products = productRepo.findAllByOrderByProductNameDesc();
         model.put("products", products);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        User currentUser = userRepo.findByUsername(name);
 
+        model.put("currentUser", currentUser);
+        model.put("currentRole", currentUser.getRoles().toString());
+        model.put("currentUserName", currentUser.getUsername());
+        model.put("showAdmin", currentUser.isShowAdmin());
+        model.put("showSklad", currentUser.isShowSklad());
+        model.put("showReport", currentUser.isShowReport());
+        model.put("showStore", currentUser.isShowStore());
+        String filterValue = "";
+        model.put("filterValue", filterValue);
         return "producttable";
     }
 
@@ -70,7 +142,20 @@ public class ProductController {
     public String producttableGender(Map<String, Object> model) {
         Iterable<Product> products = productRepo.findAllByOrderByGenderAsc();
         model.put("products", products);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        User currentUser = userRepo.findByUsername(name);
 
+        model.put("currentUser", currentUser);
+        model.put("currentRole", currentUser.getRoles().toString());
+        model.put("currentUserName", currentUser.getUsername());
+        model.put("showAdmin", currentUser.isShowAdmin());
+        model.put("showSklad", currentUser.isShowSklad());
+        model.put("showReport", currentUser.isShowReport());
+        model.put("showStore", currentUser.isShowStore());
+
+        String filterValue = "";
+        model.put("filterValue", filterValue);
         return "producttable";
 
     }
@@ -86,7 +171,17 @@ public class ProductController {
 
         Iterable<ProductName> productNames = productNameRepo.findAll();
         model.put("productNames", productNames);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        User currentUser = userRepo.findByUsername(name);
 
+        model.put("currentUser", currentUser);
+        model.put("currentRole", currentUser.getRoles().toString());
+        model.put("currentUserName", currentUser.getUsername());
+        model.put("showAdmin", currentUser.isShowAdmin());
+        model.put("showSklad", currentUser.isShowSklad());
+        model.put("showReport", currentUser.isShowReport());
+        model.put("showStore", currentUser.isShowStore());
         return "productadd";
 
     }
@@ -118,7 +213,20 @@ public class ProductController {
 
         Iterable<ProductName> productNames = productNameRepo.findAll();
         model.put("productNames", productNames);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        User currentUser = userRepo.findByUsername(name);
 
+        model.put("currentUser", currentUser);
+        model.put("currentRole", currentUser.getRoles().toString());
+        model.put("currentUserName", currentUser.getUsername());
+        model.put("showAdmin", currentUser.isShowAdmin());
+        model.put("showSklad", currentUser.isShowSklad());
+        model.put("showReport", currentUser.isShowReport());
+        model.put("showStore", currentUser.isShowStore());
+
+        String filterValue = "";
+        model.put("filterValue", filterValue);
 
         return "producttable";
     }
@@ -187,8 +295,20 @@ public class ProductController {
         model.put("compositions", compositions);
         Iterable<ProductName> productNames = productNameRepo.findAll();
         model.put("productNames", productNames);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        User currentUser = userRepo.findByUsername(name);
 
+        model.put("currentUser", currentUser);
+        model.put("currentRole", currentUser.getRoles().toString());
+        model.put("currentUserName", currentUser.getUsername());
+        model.put("showAdmin", currentUser.isShowAdmin());
+        model.put("showSklad", currentUser.isShowSklad());
+        model.put("showReport", currentUser.isShowReport());
+        model.put("showStore", currentUser.isShowStore());
 
+        String filterValue = "";
+        model.put("filterValue", filterValue);
         return "producttable";
     }
 
@@ -216,8 +336,20 @@ public class ProductController {
         model.put("compositions", compositions);
         Iterable<ProductName> productNames = productNameRepo.findAll();
         model.put("productNames", productNames);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        User currentUser = userRepo.findByUsername(name);
 
+        model.put("currentUser", currentUser);
+        model.put("currentRole", currentUser.getRoles().toString());
+        model.put("currentUserName", currentUser.getUsername());
+        model.put("showAdmin", currentUser.isShowAdmin());
+        model.put("showSklad", currentUser.isShowSklad());
+        model.put("showReport", currentUser.isShowReport());
+        model.put("showStore", currentUser.isShowStore());
 
+        String filterValue = "";
+        model.put("filterValue", filterValue);
 
         return "producttable";
     }
