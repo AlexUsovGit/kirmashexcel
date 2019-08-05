@@ -1,7 +1,6 @@
 package com.example.sweater.export;
 
 import com.example.sweater.domain.Product;
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -12,12 +11,14 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Exports {
-    private static final String FILE_NAME = "MyFirstExcel.xlsx";
+    private static final String FILE_NAME = "products.xlsx";
 
     public void createXlsx(Iterable<Product> products) {
 
@@ -105,7 +106,7 @@ public class Exports {
 
             String sDate1 = product.getDateArrive().substring(8, 10)
                     + "." + product.getDateArrive().substring(5, 7) + "." + product.getDateArrive().substring(0, 4);
-            Date date1= null;
+            Date date1 = null;
             try {
                 date1 = new SimpleDateFormat("dd.MM.yyyy").parse(sDate1);
             } catch (ParseException e) {
@@ -155,5 +156,18 @@ public class Exports {
         }
 
         System.out.println("Done");
+    }
+
+
+    public byte[] getXLS() throws IOException {
+
+        byte[] myByteFile = new byte[0];
+        try {
+            myByteFile = Files.readAllBytes(Paths.get("products.xlsx"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return myByteFile;
+
     }
 }
