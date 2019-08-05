@@ -1,27 +1,20 @@
 package com.example.sweater.controller;
 
 
-import com.example.sweater.domain.NewLabel;
 import com.example.sweater.domain.Product;
-import com.example.sweater.domain.basedictionary.Composition;
-import com.example.sweater.domain.basedictionary.ProductName;
 import com.example.sweater.export.Exports;
-import com.example.sweater.repos.InfoClassRepo;
 import com.example.sweater.repos.ProductRepo;
-import com.example.sweater.repos.basedictionaryrepos.CompositionRepo;
-import com.example.sweater.repos.basedictionaryrepos.ProductNameRepo;
-import com.itextpdf.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Map;
 
 @Controller
@@ -41,7 +34,30 @@ public class ExportController {
         return "producttable";
     }
 
+    @RequestMapping(value = "/getProducts", method = RequestMethod.POST)
+    public ResponseEntity<byte[]> getExcel() throws IOException {
+        Iterable<Product> products;
+        ResponseEntity<byte[]> response = null;
 
 
+        products = productRepo.findAllByOrderByIdDesc();
+        Exports exports = new Exports();
+        exports.createXlsx(products);
+        byte[] contents = exports.getXLS();
 
-}
+
+        HttpHeaders headers = new HttpHeaders();
+       // headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentType(MediaType.APPLICATION_XML);
+        // Here you have to set the actual filename of your pdf
+        String filename = "products.xlsx";
+        headers.setContentDispositionFormData(filename, filename);
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+        response = new ResponseEntity<>(contents, headers, HttpStatus.OK);
+
+
+        return response;
+
+
+    }
+    }
