@@ -193,9 +193,9 @@
                       class="w30" autocomplete="off" onkeypress='validate(event)' oninput='calculateSum()'>
                <script>
                   function calculateSum() {
-                     document.getElementsByName("retailPrice")[0].value = Math.round(document.getElementsByName("course")[0].value *
+         document.getElementsByName("retailPrice")[0].value = Math.round(document.getElementsByName("course")[0].value *
                              document.getElementsByName("importPrice")[0].value *
-                             document.getElementsByName("coefficient")[0].value);
+                             document.getElementsByName("coefficient")[0].value*100)/100;
 
                   }
                </script>
