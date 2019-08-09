@@ -174,7 +174,6 @@ public class ProductController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         User currentUser = userRepo.findByUsername(name);
-
         model.put("currentUser", currentUser);
         model.put("currentRole", currentUser.getRoles().toString());
         model.put("currentUserName", currentUser.getUsername());
@@ -182,6 +181,8 @@ public class ProductController {
         model.put("showSklad", currentUser.isShowSklad());
         model.put("showReport", currentUser.isShowReport());
         model.put("showStore", currentUser.isShowStore());
+        Product product = productRepo.findFirst1ByOrderByIdDesc();
+        model.put("product", product);
         return "productadd";
 
     }
