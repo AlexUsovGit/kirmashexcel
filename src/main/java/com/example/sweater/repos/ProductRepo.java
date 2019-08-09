@@ -13,6 +13,7 @@ public interface ProductRepo extends CrudRepository<Product, Integer> {
     List<Product> findAllByOrderByProductNameAsc();
     List<Product> findAllByOrderByProductNameDesc();
     List<Product> findAllByOrderByGenderAsc();
+    Product findFirst1ByOrderByIdDesc ();
 
     List<Product> findByBarcodeOrderByIdAsc(String barcode);
 
